@@ -1,25 +1,34 @@
 import unittest
-from delayed_assert import expect, assert_expectations
+from parameterized import parameterized
 from nonrepeatingelements import findnonrepeatingelements
 
 class NonRepeatingElementsTest(unittest.TestCase):
 
-  def test_array_singleelement_nonrepeatable(self):
-    expect( lambda: self.assertEqual(findnonrepeatingelements([1]), {1}))
-    assert_expectations()
+  @parameterized.expand([
+    ("Array single element non repeatable", [1], {1}),
+    ("Array multiple unique element multiple non repeatable", [1,2,3], {1,2,3})
+  ])
+  def test_find_unique_nonrepeating_elements(self, name, input, expected):
+    self.longMessage = True
+    actual = findnonrepeatingelements(input)
+    message = 'For input {0}, expected value = {1}, and actual value = {2}'.format(input, expected, actual)
+    self.assertEqual(expected, actual, message)
 
-  def test_array_multipleuniqueelement_mutliplenonrepeatable(self):
-    expect( lambda: self.assertEqual(findnonrepeatingelements([1,2,3]), {1,2,3}))
-    assert_expectations()
+  @parameterized.expand([
+    ("Array multiple element single non repeatable", [1,2,3,2,1], {3}),
+    ("Array multiple element multiple non repeatable", [1, 2, 2, 3, 1, 4, 1, 3, 67], {4, 67})
+  ])
+  def test_find_nonrepeating_elements_among_duplicates(self, name, input, expected):
+    self.longMessage = True
+    actual = findnonrepeatingelements(input)
+    message = 'For input {0}, expected value = {1}, and actual value = {2}'.format(input, expected, actual)
+    self.assertEqual(expected, actual, message)
 
-  def test_array_multipleelement_singlerepeatable(self):
-    expect( lambda: self.assertEqual(findnonrepeatingelements([1,1]), set()))
-    assert_expectations()
-
-  def test_array_multipleelement_singlenonrepeatable(self):
-    expect( lambda: self.assertEqual(findnonrepeatingelements([1,2,3,2,1]), {3}))
-    assert_expectations()
-
-  def test_array_multipleelement_multiplenonrepeatable(self):
-    expect( lambda: self.assertEqual(findnonrepeatingelements([1,2,2,3,1,4,1,3,67]), {4,67}))
-    assert_expectations()
+  @parameterized.expand([
+    ("Array multiple element single repeatable", [1,1], set())
+  ])
+  def test_find_duplicate_elements(self, name, input, expected):
+    self.longMessage = True
+    actual = findnonrepeatingelements(input)
+    message = 'For input {0}, expected value = {1}, and actual value = {2}'.format(input, expected, actual)
+    self.assertEqual(expected, actual, message)
